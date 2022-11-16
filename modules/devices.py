@@ -23,7 +23,11 @@ def get_optimal_device():
             cuda_device = f"cuda:{device_id}"
             return torch.device(cuda_device)
         else:
-            return torch.device("cuda")
+            if os.environ.get('CUDA_VISIBLE_DEVICES'):
+                cuda_num = os.environ.get('CUDA_VISIBLE_DEVICES')
+                return torch.device(f"cuda:{cuda_num}")
+            else:
+                raise Exception("CUDA_VISIBLE_DEVICES not set")
 
     if has_mps:
         return torch.device("mps")
